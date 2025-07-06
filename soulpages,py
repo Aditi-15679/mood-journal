@@ -1,0 +1,76 @@
+import csv
+from datetime import datetime
+
+# File where journal entries will be saved
+FILENAME = "entries.csv"
+
+# Mood choices
+MOODS = {
+    "1": "😊 Happy",
+    "2": "😞 Sad",
+    "3": "😐 Neutral",
+    "4": "😠 Angry",
+    "5": "🤩 Excited",
+    "6": "😔 Tired"
+}
+
+# Function to show mood choices
+def show_moods():
+    print("\nHow are you feeling today?")
+    for key, mood in MOODS.items():
+        print(f"{key}: {mood}")  # Using single colon for display
+
+# Function to add a new journal entry
+def add_entry():
+    # Get current date and time
+    date = datetime.now().strftime("%Y-%m-%d %H:%M")
+
+    # Ask user to choose mood
+    show_moods()
+    mood_choice = input("Select your mood (1–6): ")
+    mood = MOODS.get(mood_choice, "Unspecified")
+
+    # Ask user to write journal entry
+    note = input("Write your journal entry:\n> ")
+
+    # Save to CSV file
+    with open(FILENAME, mode="a", newline='', encoding='utf-8') as file:
+        writer = csv.writer(file)
+        writer.writerow([date, mood, note])
+
+    print("\n✅ Your entry has been saved.")
+
+# Function to view all entries
+def view_entries():
+    print("\n📖 Your Journal Entries:\n")
+    try:
+        with open(FILENAME, mode="r", encoding='utf-8') as file:
+            reader = csv.reader(file)
+            for row in reader:
+                print(f"[{row[0]}] {row[1]} – {row[2]}")
+    except FileNotFoundError:
+        print("No entries found yet.")
+
+# Main menu loop
+def main():
+    while True:
+        print("\n--- SoulPages: Journal & Mood Tracker ---")
+        print("1. Add new entry")
+        print("2. View past entries")
+        print("3. Exit")
+
+        choice = input("Choose an option (1–3): ")
+
+        if choice == "1":
+            add_entry()
+        elif choice == "2":
+            view_entries()
+        elif choice == "3":
+            print("Goodbye 🌙")
+            break
+        else:
+            print("Invalid choice. Try again.")
+
+# Run the program
+if __name__ == "__main__":
+    main()
